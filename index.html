@@ -15,18 +15,19 @@
 
     <div id="main-content" class="main-content hidden">
         <header>
+            <div id="status-container">
+                <div id="status-indicator" class="status-red"></div>
+                <span id="status-text">Desconnectat</span>
+            </div>
+            
             <h1>🏛️ Aplicació Ibero-Sensors</h1>
             <nav>
-                <a href="#inici-sec">Inici</a>
-                <a href="#sensor-data-sec">Últimes Dades de Sensors</a>
+                <a href="#sensor-data-sec">Últimes Dades</a>
+                <a href="#historic-sec">24 Hores</a> 
                 <a href="#">Mapa</a>
             </nav>
         </header>
         <main>
-            <section id="inici-sec" class="intro">
-                <h2>Benvingut/da!</h2>
-                <p>Aquesta és la teva aplicació responsiva i interactiva per a l'anàlisi de dades d'excavacions. Aquí tens el contingut real de l'aplicació.</p>
-            </section>
             
             <section id="sensor-data-sec" class="sensor-data-container">
                 <h2>Última Lectura de Sensors</h2>
@@ -45,6 +46,11 @@
                 </div>
             </section>
             
+            <section id="historic-sec" class="intro">
+                <h2>Històric de 24 Hores</h2>
+                <p>Aquí es mostraran les dades històriques (gràfics, taules, etc.) de les darreres 24 hores dels sensors. Aquesta secció està pendent de ser implementada.</p>
+            </section>
+
             <section class="responsive-example">
                 <h3>Exemple de Responsivitat</h3>
                 <div class="card-container">
