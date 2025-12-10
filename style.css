@@ -1,4 +1,4 @@
-/* --- Estils Generals i Responsivitat --- */
+/* --- Estils Generals i Responsivitat (Sense canvis, però aquí hi va la resta) --- */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -30,6 +30,7 @@ main {
     padding: 20px;
     max-width: 1200px;
     margin: auto; /* Centra el contingut */
+    padding-bottom: 70px; /* Espai per al footer fix */
 }
 
 footer {
@@ -53,7 +54,7 @@ footer {
 /* Contenidor per a les targetes: utilitza Flexbox per a responsivitat */
 .card-container {
     display: flex;
-    flex-wrap: wrap; /* Permet que les targetes saltin de línia */
+    flex-wrap: wrap; 
     gap: 20px;
     margin-top: 20px;
 }
@@ -64,7 +65,7 @@ footer {
     border-radius: 8px;
     padding: 15px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    flex: 1 1 300px; /* Base de flexibilitat: creix, es redueix, i té una amplada base de 300px */
+    flex: 1 1 300px;
     text-align: center;
 }
 
@@ -74,11 +75,11 @@ footer {
         font-size: 1.5em;
     }
     nav a {
-        display: block; /* Els enllaços de navegació a sota un de l'altre */
+        display: block; 
         padding: 5px 0;
     }
     .card-container {
-        flex-direction: column; /* Una columna per a mòbils */
+        flex-direction: column; 
     }
 }
 
@@ -90,17 +91,17 @@ footer {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #1a1a1a; /* Fons fosc */
+    background-color: #1a1a1a; 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Assegura que estigui per sobre de tot */
-    transition: opacity 0.5s ease-out; /* Animació de transició */
+    z-index: 1000; 
+    transition: opacity 0.5s ease-out; 
 }
 
 .portada-imatge {
-    max-width: 90%; /* Responsiva: s'adapta a l'amplada de la pantalla */
+    max-width: 90%; 
     max-height: 80%;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
@@ -120,4 +121,62 @@ footer {
 /* Classe per afegir al final de la transició */
 .fade-out {
     opacity: 0;
+}
+
+/* --- Estils per a la Secció de Dades de Sensors --- */
+
+.sensor-data-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+#sensor-data-list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 15px;
+}
+
+#sensor-data-list li {
+    background-color: #e6f0ff; /* Fons suau per a cada dada */
+    margin-bottom: 8px;
+    padding: 10px;
+    border-left: 5px solid #4a6fa5;
+    border-radius: 4px;
+    font-size: 1.1em;
+}
+
+.timestamp-text {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 20px;
+    border-top: 1px dashed #ccc;
+    padding-top: 10px;
+}
+
+/* Estils per al botó d'actualització */
+#refresh-button {
+    background-color: #008cba;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+#refresh-button:hover {
+    background-color: #005f7c;
+}
+
+.data-loading-message, .data-error-message {
+    font-style: italic;
+    color: orange;
 }
