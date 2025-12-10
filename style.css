@@ -1,182 +1,53 @@
 /* --- Estils Generals i Responsivitat (Sense canvis, però aquí hi va la resta) --- */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    color: #333;
-    line-height: 1.6;
-}
+/* ... (Mantingues tots els estils anteriors) ... */
 
-header {
-    background-color: #4a6fa5; /* Blau Ibèric */
-    color: white;
-    padding: 20px;
-    text-align: center;
-}
+/* --- NOUS ESTILS: INDICADOR D'ESTAT --- */
 
-header h1 {
-    margin-top: 0;
-}
-
-nav a {
-    color: white;
-    margin: 0 15px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-main {
-    padding: 20px;
-    max-width: 1200px;
-    margin: auto; /* Centra el contingut */
-    padding-bottom: 70px; /* Espai per al footer fix */
-}
-
-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #ccc;
-    color: #333;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
-.intro {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-}
-
-/* Contenidor per a les targetes: utilitza Flexbox per a responsivitat */
-.card-container {
+#status-container {
+    position: absolute; /* Per posicionar-lo dins de l'header */
+    top: 15px;
+    left: 20px;
     display: flex;
-    flex-wrap: wrap; 
-    gap: 20px;
-    margin-top: 20px;
-}
-
-.card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    flex: 1 1 300px;
-    text-align: center;
-}
-
-/* Media Query: Fa que el disseny s'adapti a pantalles petites (mòbils) */
-@media (max-width: 600px) {
-    header h1 {
-        font-size: 1.5em;
-    }
-    nav a {
-        display: block; 
-        padding: 5px 0;
-    }
-    .card-container {
-        flex-direction: column; 
-    }
-}
-
-
-/* --- Estils de la Pantalla de Càrrega (Splash Screen) --- */
-.splash-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #1a1a1a; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    z-index: 1000; 
-    transition: opacity 0.5s ease-out; 
-}
-
-.portada-imatge {
-    max-width: 90%; 
-    max-height: 80%;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
-.carregant-text {
     color: white;
-    margin-top: 20px;
-    font-size: 1.2em;
-}
-
-/* Classe per amagar elements */
-.hidden {
-    display: none !important;
-}
-
-/* Classe per afegir al final de la transició */
-.fade-out {
-    opacity: 0;
-}
-
-/* --- Estils per a la Secció de Dades de Sensors --- */
-
-.sensor-data-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-top: 20px;
-}
-
-#sensor-data-list {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 15px;
-}
-
-#sensor-data-list li {
-    background-color: #e6f0ff; /* Fons suau per a cada dada */
-    margin-bottom: 8px;
-    padding: 10px;
-    border-left: 5px solid #4a6fa5;
-    border-radius: 4px;
-    font-size: 1.1em;
-}
-
-.timestamp-text {
+    font-weight: bold;
     font-size: 0.9em;
-    color: #666;
-    margin-top: 20px;
-    border-top: 1px dashed #ccc;
-    padding-top: 10px;
 }
 
-/* Estils per al botó d'actualització */
-#refresh-button {
-    background-color: #008cba;
+#status-indicator {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 8px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Colors de l'indicador */
+.status-green {
+    background-color: #4CAF50; /* Verd */
+    box-shadow: 0 0 10px #4CAF50; /* Petita llum */
+}
+
+.status-red {
+    background-color: #f44336; /* Vermell */
+    box-shadow: 0 0 10px #f44336;
+}
+
+/* Ajusta l'header per permetre l'absolut */
+header {
+    background-color: #4a6fa5;
     color: white;
-    border: none;
-    padding: 10px 20px;
+    padding: 20px;
     text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    position: relative; /* Crucial per a l'element absolut */
 }
 
-#refresh-button:hover {
-    background-color: #005f7c;
+/* Media Query: Ajuntem l'indicador amb el títol en mòbils */
+@media (max-width: 600px) {
+    #status-container {
+        position: static; 
+        margin-bottom: 10px;
+        justify-content: center;
+    }
 }
-
-.data-loading-message, .data-error-message {
-    font-style: italic;
-    color: orange;
-}
+/* ... (Mantingues la resta d'estils anteriors) ... */
