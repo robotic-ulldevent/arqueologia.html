@@ -1,25 +1,95 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Selecciona els elements clau
+    // 1. Lògica de la Pantalla de Càrrega (Splash Screen)
     const splashScreen = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
-
-    // 2. Defineix el temps d'espera en mil·lisegons (5 segons = 5000 ms)
     const tempsEspera = 5000;
 
-    // 3. Utilitza setTimeout per esperar el temps definit
     setTimeout(() => {
-        // Afegeix la classe 'fade-out' per iniciar l'animació de desaparició
         splashScreen.classList.add('fade-out');
-
-        // Espera una mica més (0.5s, la duració de la transició CSS) abans d'amagar completament
-        // Això assegura que l'animació de 'fade' es vegi.
         setTimeout(() => {
-            // Amaga la pantalla de càrrega completament
             splashScreen.classList.add('hidden');
-            
-            // Mostra el contingut principal
             mainContent.classList.remove('hidden');
-        }, 500); // 500ms = 0.5 segons
+            
+            // Un cop l'aplicació és visible, carreguem les dades inicials
+            fetchSensorData();
+        }, 500); 
         
-    }, tempsEspera); // Espera 5000 mil·lisegons abans de començar la transició
+    }, tempsEspera); 
+
+    // 2. Lògica de l'API de ThingSpeak
+    
+    // ⚠️ ATENCIÓ: HAS DE SUBSTITUIR [EL TEU CHANNEL ID] PEL NÚMERO DEL TEU CANAL.
+    const CHANNEL_ID = '[EL TEU CHANNEL ID]'; // Exemple: 123456
+    const READ_API_KEY = 'EQNNKHBZGLZVUZ34';
+    
+    // URL per obtenir l'última lectura en format JSON
+    const API_URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds/last.json?api_key=${READ_API_KEY}`;
+    
+    // Mapeig dels camps de ThingSpeak als elements HTML (segons l'ordre demanat)
+    const fieldMap = [
+        { id: 'data-temperatura', label: 'Temperatura', field: 'field1' },
+        { id: 'data-lluminositat', label: 'Lluminositat', field: 'field2' },
+        { id: 'data-so', label: 'So', field: 'field3' },
+        { id: 'data-inclinacio-x', label: 'Inclinació X', field: 'field4' },
+        { id: 'data-inclinacio-y', label: 'Inclinació Y', field: 'field5' },
+    ];
+    
+    const timestampElement = document.getElementById('data-timestamp');
+    const dataArea = document.getElementById('data-display-area');
+
+    async function fetchSensorData() {
+        dataArea.innerHTML = '<p class="data-loading-message">Carregant dades...</p>';
+        
+        try {
+            const response = await fetch(API_URL);
+            
+            if (!response.ok) {
+                throw new Error(`Error de xarxa: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Reemplacem l'àrea de càrrega amb l'estructura de la llista
+            dataArea.innerHTML = `
+                <ul id="sensor-data-list">
+                    <li id="data-temperatura"></li>
+                    <li id="data-lluminositat"></li>
+                    <li id="data-so"></li>
+                    <li id="data-inclinacio-x"></li>
+                    <li id="data-inclinacio-y"></li>
+                </ul>
+                <p id="data-timestamp" class="timestamp-text"></p>
+            `;
+            
+            // Actualitzem cada element de la llista
+            fieldMap.forEach(item => {
+                const element = document.getElementById(item.id);
+                // Si el camp existeix a la resposta JSON i no és nul
+                const value = data[item.field] || 'N/A';
+                
+                // Formatem la visualització
+                element.innerHTML = `**${item.label}:** ${value}`;
+            });
+            
+            // Afegim l'hora d'actualització
+            const rawTimestamp = data.created_at;
+            const date = new Date(rawTimestamp);
+            const formattedDate = date.toLocaleString('ca-ES', { 
+                dateStyle: 'short', 
+                timeStyle: 'medium' 
+            });
+            
+            document.getElementById('data-timestamp').textContent = `Darrera actualització: ${formattedDate}`;
+
+        } catch (error) {
+            console.error('Error carregant dades de ThingSpeak:', error);
+            dataArea.innerHTML = '<p class="data-error-message">❌ No s\'han pogut carregar les dades. Si us plau, comprova el Channel ID i la clau API.</p>';
+        }
+    }
+    
+    // 3. Enllaça la funció d'actualització al botó
+    const refreshButton = document.getElementById('refresh-button');
+    if (refreshButton) {
+        refreshButton.addEventListener('click', fetchSensorData);
+    }
 });
