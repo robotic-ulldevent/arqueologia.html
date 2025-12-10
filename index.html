@@ -17,15 +17,32 @@
         <header>
             <h1>🏛️ Aplicació Ibero-Sensors</h1>
             <nav>
-                <a href="#">Inici</a>
-                <a href="#">Dades</a>
+                <a href="#inici-sec">Inici</a>
+                <a href="#sensor-data-sec">Últimes Dades de Sensors</a>
                 <a href="#">Mapa</a>
             </nav>
         </header>
         <main>
-            <section class="intro">
+            <section id="inici-sec" class="intro">
                 <h2>Benvingut/da!</h2>
-                <p>Aplicació de prova de consulta de dades amb ThingSpeak</p>
+                <p>Aquesta és la teva aplicació responsiva i interactiva per a l'anàlisi de dades d'excavacions. Aquí tens el contingut real de l'aplicació.</p>
+            </section>
+            
+            <section id="sensor-data-sec" class="sensor-data-container">
+                <h2>Última Lectura de Sensors</h2>
+                <button id="refresh-button">Actualitza Dades</button>
+                
+                <div id="data-display-area">
+                    <p class="data-loading-message">Carregant dades...</p>
+                    <ul id="sensor-data-list">
+                        <li id="data-temperatura">**Temperatura:** Carregant...</li>
+                        <li id="data-lluminositat">**Lluminositat:** Carregant...</li>
+                        <li id="data-so">**So:** Carregant...</li>
+                        <li id="data-inclinacio-x">**Inclinació X:** Carregant...</li>
+                        <li id="data-inclinacio-y">**Inclinació Y:** Carregant...</li>
+                    </ul>
+                    <p id="data-timestamp" class="timestamp-text">Darrera actualització: Carregant...</p>
+                </div>
             </section>
             
             <section class="responsive-example">
