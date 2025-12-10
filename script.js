@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Lògica de la Pantalla de Càrrega (Splash Screen)
+    // 1. Lògica de la Pantalla de Càrrega (Splash Screen) (Sense canvis)
     const splashScreen = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
     const tempsEspera = 5000;
@@ -36,9 +36,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const timestampElement = document.getElementById('data-timestamp');
     const dataArea = document.getElementById('data-display-area');
+    
+    // NOU: Elements per l'indicador d'estat
+    const statusIndicator = document.getElementById('status-indicator');
+    const statusText = document.getElementById('status-text');
+
 
     async function fetchSensorData() {
         dataArea.innerHTML = '<p class="data-loading-message">Carregant dades...</p>';
+        
+        // Asumeix error mentre carrega
+        statusIndicator.classList.remove('status-green');
+        statusIndicator.classList.add('status-red');
+        statusText.textContent = 'Carregant...';
         
         try {
             const response = await fetch(API_URL);
@@ -49,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const data = await response.json();
             
-            // Reemplacem l'àrea de càrrega amb l'estructura de la llista
+            // Restaura l'estructura de la llista (per si l'havia substituït un error)
             dataArea.innerHTML = `
                 <ul id="sensor-data-list">
                     <li id="data-temperatura"></li>
@@ -61,14 +71,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p id="data-timestamp" class="timestamp-text"></p>
             `;
             
+            let dataReceived = true; // Flag per a l'indicador d'estat
+            
             // Actualitzem cada element de la llista
             fieldMap.forEach(item => {
                 const element = document.getElementById(item.id);
-                // Si el camp existeix a la resposta JSON i no és nul
-                const value = data[item.field] || 'N/A';
+                
+                // NOVEtat: Comprovació de dades faltants
+                const value = data[item.field]; 
+                
+                let displayValue;
+                if (value === null || value === undefined || value.trim() === "") {
+                    displayValue = 'Sense dades ara mateix';
+                    dataReceived = false; // Si falta alguna dada, canviem l'estat a vermell
+                } else {
+                    displayValue = value;
+                }
                 
                 // Formatem la visualització
-                element.innerHTML = `**${item.label}:** ${value}`;
+                element.innerHTML = `**${item.label}:** ${displayValue}`;
             });
             
             // Afegim l'hora d'actualització
@@ -81,9 +102,26 @@ document.addEventListener('DOMContentLoaded', () => {
             
             document.getElementById('data-timestamp').textContent = `Darrera actualització: ${formattedDate}`;
 
+            // NOVEtat: Actualització de l'indicador d'estat
+            if (dataReceived) {
+                statusIndicator.classList.remove('status-red');
+                statusIndicator.classList.add('status-green');
+                statusText.textContent = 'Dades rebudes';
+            } else {
+                statusIndicator.classList.remove('status-green');
+                statusIndicator.classList.add('status-red');
+                statusText.textContent = 'Alerta: Dades incompletes';
+            }
+
+
         } catch (error) {
             console.error('Error carregant dades de ThingSpeak:', error);
-            dataArea.innerHTML = '<p class="data-error-message">❌ No s\'han pogut carregar les dades. Si us plau, comprova el Channel ID i la clau API.</p>';
+            dataArea.innerHTML = '<p class="data-error-message">❌ No s\'han pogut carregar les dades. Comprova el Channel ID, la clau API o la connexió.</p>';
+            
+            // NOVEtat: Estat vermell si hi ha error
+            statusIndicator.classList.remove('status-green');
+            statusIndicator.classList.add('status-red');
+            statusText.textContent = 'ERROR de connexió';
         }
     }
     
