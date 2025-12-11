@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dades Ibero-Sensors - Històric 24 Hores</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    
+    <div id="main-content">
+        <header>
+            <div id="status-container">
+                <div id="status-indicator" class="status-red"></div>
+                <span id="status-text">Desconnectat</span>
+            </div>
+            
+            <h1>🏛️ Aplicació Ibero-Sensors</h1>
+            <nav id="main-nav">
+                <a href="index.html" class="nav-button">Últimes Dades</a>
+                <a href="historic.html" class="nav-button active">24 Hores</a> 
+                <a href="alarmes.html" class="nav-button">Alarmes</a>
+                <a href="#" class="nav-button">Mapa</a>
+            </nav>
+        </header>
+        
+        <main>
+            <section class="data-section">
+                <h2 class="section-title">Històric de 24 Hores i Mitjanes</h2>
+                
+                <div id="average-data-container" class="data-cards-container">
+                    <p class="initial-message">Calculant mitjanes de les últimes 24 lectures...</p>
+                </div>
+                
+                <div id="charts-container">
+                    <h3>Evolució de les Últimes 24 Lectures</h3>
+                    <p id="chart-loading-message">Carregant gràfics...</p>
+                    
+                    <div class="chart-box">
+                        <h4>Temperatura</h4>
+                        <canvas id="chart-temperatura"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h4>Lluminositat</h4>
+                        <canvas id="chart-lluminositat"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h4>So</h4>
+                        <canvas id="chart-so"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h4>Inclinació X</h4>
+                        <canvas id="chart-inclinacio-x"></canvas>
+                    </div>
+                    <div class="chart-box">
+                        <h4>Inclinació Y</h4>
+                        <canvas id="chart-inclinacio-y"></canvas>
+                    </div>
+                </div>
+                
+            </section>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 El Teu Projecte de Github</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script> <script src="historic.js"></script> </body>
+</html>
