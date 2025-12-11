@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitorització Ciutadella ibèrica de Calafell</title>
+    <title>Dades Ibero-Sensors - Última Lectura</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="splash-screen" class="splash-screen">
         <img src="portada.jpg" alt="Imatge de Portada de l'Aplicació" class="portada-imatge">
-        <p class="carregant-text">Carregant aplicació...</p>
+        <p class="carregant-text">Carregant aplicació (10s)...</p>
     </div>
 
     <div id="main-content" class="main-content hidden">
@@ -20,55 +20,29 @@
                 <span id="status-text">Desconnectat</span>
             </div>
             
-            <h1>🏛️ Monitorització Ciutadella ibèrica de Calafell</h1>
-            <nav>
-                <a href="#sensor-data-sec">Últimes Dades</a>
-                <a href="#historic-sec">24 Hores</a> 
-                <a href="#">Mapa</a>
+            <h1>🏛️ Aplicació Ibero-Sensors</h1>
+            <nav id="main-nav">
+                <a href="index.html" class="nav-button active">Últimes Dades</a>
+                <a href="historic.html" class="nav-button">24 Hores</a> 
+                <a href="alarmes.html" class="nav-button">Alarmes</a>
+                <a href="#" class="nav-button">Mapa</a>
             </nav>
         </header>
+        
         <main>
-            
-            <section id="sensor-data-sec" class="sensor-data-container">
-                <h2>Última Lectura de Sensors</h2>
-                <button id="refresh-button">Actualitza Dades</button>
+            <section id="sensor-data-sec" class="data-section">
+                <h2 class="section-title">Última Lectura de Sensors</h2>
                 
-                <div id="data-display-area">
-                    <p class="data-loading-message">Carregant dades...</p>
-                    <ul id="sensor-data-list">
-                        <li id="data-temperatura">Temperatura: Carregant...</li>
-                        <li id="data-lluminositat">Lluminositat: Carregant...</li>
-                        <li id="data-so">So: Carregant...</li>
-                        <li id="data-inclinacio-x">Inclinació X: Carregant...</li>
-                        <li id="data-inclinacio-y">Inclinació Y: Carregant...</li>
-                    </ul>
-                    <p id="data-timestamp" class="timestamp-text">Darrera actualització: Carregant...</p>
+                <button id="refresh-button" class="action-button">Actualitza Dades Manualment</button>
+                
+                <div id="data-display-area" class="data-cards-container">
+                    <p class="initial-message">Carregant dades...</p>
                 </div>
-            </section>
-            
-            <section id="historic-sec" class="intro">
-                <h2>Històric de 24 Hores</h2>
-                <p>Aquí es mostraran les dades històriques (gràfics, taules, etc.) de les darreres 24 hores dels sensors. Aquesta secció està pendent de ser implementada.</p>
-            </section>
 
-            <section class="responsive-example">
-                <h3>Exemple de Responsivitat</h3>
-                <div class="card-container">
-                    <div class="card">
-                        <h4>Sensor 1</h4>
-                        <p>Dades de temperatura</p>
-                    </div>
-                    <div class="card">
-                        <h4>Sensor 2</h4>
-                        <p>Dades d'humitat</p>
-                    </div>
-                    <div class="card">
-                        <h4>Sensor 3</h4>
-                        <p>Dades de pressió</p>
-                    </div>
-                </div>
+                <p id="data-timestamp" class="timestamp-text">Darrera actualització: Carregant...</p>
             </section>
         </main>
+        
         <footer>
             <p>&copy; 2025 El Teu Projecte de Github</p>
         </footer>
