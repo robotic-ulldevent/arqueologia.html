@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Lògica de l'API de ThingSpeak
     
     // ⚠️ ATENCIÓ: HAS DE SUBSTITUIR [EL TEU CHANNEL ID] PEL NÚMERO DEL TEU CANAL.
-    const CHANNEL_ID = '[EL TEU CHANNEL ID]'; // Exemple: 123456
+    const CHANNEL_ID = '3197190'; // Exemple: 123456
     const READ_API_KEY = 'EQNNKHBZGLZVUZ34';
     
     // URL per obtenir l'última lectura en format JSON
