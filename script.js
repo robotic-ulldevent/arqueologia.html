@@ -1,54 +1,64 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Lògica de la Pantalla de Càrrega (Splash Screen) (Sense canvis)
+    // 1. Lògica de la Pantalla de Portada
     const splashScreen = document.getElementById('splash-screen');
     const mainContent = document.getElementById('main-content');
-    const tempsEspera = 5000;
-
-    setTimeout(() => {
-        splashScreen.classList.add('fade-out');
-        setTimeout(() => {
-            splashScreen.classList.add('hidden');
-            mainContent.classList.remove('hidden');
-            
-            // Un cop l'aplicació és visible, carreguem les dades inicials
-            fetchSensorData();
-        }, 500); 
-        
-    }, tempsEspera); 
-
-    // 2. Lògica de l'API de ThingSpeak
     
-    // ⚠️ ATENCIÓ: HAS DE SUBSTITUIR [EL TEU CHANNEL ID] PEL NÚMERO DEL TEU CANAL.
-    const CHANNEL_ID = '3197190'; // Exemple: 123456
+    // NOU TEMPS D'ESPERA: 10 segons (10000 ms)
+    const tempsEspera = 10000; 
+
+    if (splashScreen) { // Assegurem que només s'executa a index.html
+        setTimeout(() => {
+            splashScreen.classList.add('fade-out');
+            setTimeout(() => {
+                splashScreen.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                
+                // Carreguem les dades inicials
+                fetchSensorData(true);
+            }, 500); 
+            
+        }, tempsEspera); 
+    } else {
+        // Si no hi ha splash screen (estem a historic.html), carreguem l'estat inicial
+        // (La càrrega principal de dades es fa a historic.js)
+        fetchSensorData(false, true); 
+    }
+
+
+    // 2. Configuració de l'API de ThingSpeak
+    const CHANNEL_ID = '3197190';
     const READ_API_KEY = 'EQNNKHBZGLZVUZ34';
     
-    // URL per obtenir l'última lectura en format JSON
+    // URL per obtenir l'última lectura
     const API_URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds/last.json?api_key=${READ_API_KEY}`;
     
-    // Mapeig dels camps de ThingSpeak als elements HTML (segons l'ordre demanat)
+    // Mapeig dels camps de ThingSpeak (Afegim unitats per millorar el disseny)
     const fieldMap = [
-        { id: 'data-temperatura', label: 'Temperatura', field: 'field1' },
-        { id: 'data-lluminositat', label: 'Lluminositat', field: 'field2' },
-        { id: 'data-so', label: 'So', field: 'field3' },
-        { id: 'data-inclinacio-x', label: 'Inclinació X', field: 'field4' },
-        { id: 'data-inclinacio-y', label: 'Inclinació Y', field: 'field5' },
+        { key: 'data-temperatura', label: 'Temperatura', field: 'field1', unit: '°C' },
+        { key: 'data-lluminositat', label: 'Lluminositat', field: 'field2', unit: 'lux' },
+        { key: 'data-so', label: 'So', field: 'field3', unit: 'dB' },
+        { key: 'data-inclinacio-x', label: 'Inclinació X', field: 'field4', unit: '°' },
+        { key: 'data-inclinacio-y', label: 'Inclinació Y', field: 'field5', unit: '°' },
     ];
     
-    const timestampElement = document.getElementById('data-timestamp');
     const dataArea = document.getElementById('data-display-area');
-    
-    // NOU: Elements per l'indicador d'estat
     const statusIndicator = document.getElementById('status-indicator');
     const statusText = document.getElementById('status-text');
 
 
-    async function fetchSensorData() {
-        dataArea.innerHTML = '<p class="data-loading-message">Carregant dades...</p>';
-        
-        // Asumeix error mentre carrega
-        statusIndicator.classList.remove('status-green');
-        statusIndicator.classList.add('status-red');
-        statusText.textContent = 'Carregant...';
+    /**
+     * Carrega les últimes dades de ThingSpeak.
+     * @param {boolean} updateDisplay - Si s'ha d'actualitzar el display de targetes.
+     * @param {boolean} onlyStatus - Si només s'ha d'actualitzar l'estat (per a altres pàgines).
+     */
+    async function fetchSensorData(updateDisplay = true, onlyStatus = false) {
+        if (dataArea && updateDisplay) {
+             dataArea.innerHTML = '<p class="initial-message">Carregant dades...</p>';
+        }
+       
+        // Estat inicial de càrrega
+        if (statusIndicator) statusIndicator.classList.add('status-red');
+        if (statusText) statusText.textContent = 'Carregant...';
         
         try {
             const response = await fetch(API_URL);
@@ -59,40 +69,48 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const data = await response.json();
             
-            // Restaura l'estructura de la llista (per si l'havia substituït un error)
-            dataArea.innerHTML = `
-                <ul id="sensor-data-list">
-                    <li id="data-temperatura"></li>
-                    <li id="data-lluminositat"></li>
-                    <li id="data-so"></li>
-                    <li id="data-inclinacio-x"></li>
-                    <li id="data-inclinacio-y"></li>
-                </ul>
-                <p id="data-timestamp" class="timestamp-text"></p>
-            `;
+            if (onlyStatus) {
+                // Si només cal l'estat, no fem la feina pesada de renderitzar les targetes
+                if (statusIndicator) statusIndicator.classList.remove('status-red');
+                if (statusIndicator) statusIndicator.classList.add('status-green');
+                if (statusText) statusText.textContent = 'Dades en línia';
+                return data; 
+            }
+
+            let htmlContent = '';
+            let dataReceived = true;
             
-            let dataReceived = true; // Flag per a l'indicador d'estat
-            
-            // Actualitzem cada element de la llista
+            // Creació de les targetes de dades
             fieldMap.forEach(item => {
-                const element = document.getElementById(item.id);
-                
-                // NOVEtat: Comprovació de dades faltants
                 const value = data[item.field]; 
                 
                 let displayValue;
-                if (value === null || value === undefined || value.trim() === "") {
+                let displayClass = '';
+
+                if (value === null || value === undefined || (typeof value === 'string' && value.trim() === "")) {
                     displayValue = 'Sense dades ara mateix';
-                    dataReceived = false; // Si falta alguna dada, canviem l'estat a vermell
+                    displayClass = 'error-message';
+                    dataReceived = false;
                 } else {
-                    displayValue = value;
+                    displayValue = parseFloat(value).toFixed(2); // Format a 2 decimals
+                    displayClass = 'data-value';
                 }
                 
-                // Formatem la visualització
-                element.innerHTML = `**${item.label}:** ${displayValue}`;
+                htmlContent += `
+                    <div class="data-card" id="${item.key}">
+                        <h4>${item.label}</h4>
+                        <span class="${displayClass}">${displayValue}</span>
+                        <span class="data-unit">${item.unit}</span>
+                    </div>
+                `;
             });
             
-            // Afegim l'hora d'actualització
+            // Actualització del Display
+            if (dataArea) {
+                dataArea.innerHTML = htmlContent;
+            }
+            
+            // Actualització del Timestamp
             const rawTimestamp = data.created_at;
             const date = new Date(rawTimestamp);
             const formattedDate = date.toLocaleString('ca-ES', { 
@@ -100,34 +118,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 timeStyle: 'medium' 
             });
             
-            document.getElementById('data-timestamp').textContent = `Darrera actualització: ${formattedDate}`;
-
-            // NOVEtat: Actualització de l'indicador d'estat
-            if (dataReceived) {
-                statusIndicator.classList.remove('status-red');
-                statusIndicator.classList.add('status-green');
-                statusText.textContent = 'Dades rebudes';
-            } else {
-                statusIndicator.classList.remove('status-green');
-                statusIndicator.classList.add('status-red');
-                statusText.textContent = 'Alerta: Dades incompletes';
+            const timestampElement = document.getElementById('data-timestamp');
+            if (timestampElement) {
+                timestampElement.textContent = `Darrera actualització: ${formattedDate}`;
             }
 
+            // Actualització de l'Indicador d'Estat
+            if (statusIndicator) statusIndicator.classList.remove('status-red');
+            if (statusIndicator) statusIndicator.classList.add(dataReceived ? 'status-green' : 'status-red');
+            if (statusText) statusText.textContent = dataReceived ? 'Dades rebudes' : 'Alerta: Dades incompletes';
+            
+            return data; // Retornem les dades per si les necessita historic.js
 
         } catch (error) {
             console.error('Error carregant dades de ThingSpeak:', error);
-            dataArea.innerHTML = '<p class="data-error-message">❌ No s\'han pogut carregar les dades. Comprova el Channel ID, la clau API o la connexió.</p>';
-            
-            // NOVEtat: Estat vermell si hi ha error
-            statusIndicator.classList.remove('status-green');
-            statusIndicator.classList.add('status-red');
-            statusText.textContent = 'ERROR de connexió';
+            if (dataArea) {
+                dataArea.innerHTML = '<p class="error-message">❌ Error de connexió amb ThingSpeak. Comprova l\'ID del Canal.</p>';
+            }
+            // Estat d'error
+            if (statusIndicator) statusIndicator.classList.remove('status-green');
+            if (statusIndicator) statusIndicator.classList.add('status-red');
+            if (statusText) statusText.textContent = 'ERROR de connexió';
+            return null;
         }
     }
     
-    // 3. Enllaça la funció d'actualització al botó
+    // 3. Enllaça la funció d'actualització al botó (només a index.html)
     const refreshButton = document.getElementById('refresh-button');
     if (refreshButton) {
-        refreshButton.addEventListener('click', fetchSensorData);
+        refreshButton.addEventListener('click', () => fetchSensorData(true));
     }
+
+    // 4. Per a ús extern (historic.js)
+    window.fetchSensorData = fetchSensorData;
 });
